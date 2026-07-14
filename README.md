@@ -29,6 +29,27 @@ The script relies on specific file structure and naming rules for automation:
     - Use tags `baseline_before` and `baseline_after` in the filename for baseline detection.
     - Baseline files may also include `_N` for repeated measurements. The baseline subtraction occurs **after averaging**.
 
+
+## Converting New Equipment CSV Exports
+The new UV-Vis equipment can export many measurements in a single `.csv` file.
+Use `translate_csv.py` to split that file into the existing two-column `.txt`
+format before running the ROOT analysis:
+
+```bash
+python3 translate_csv.py data/TanknTarget.csv -o .
+```
+
+The converter expects the equipment layout where each measurement occupies two
+columns (`Wavelength (nm)` plus `Abs` or `%T`). It skips the first four columns
+by default because those are the two transmission reference measurements, then
+writes one `.txt` file per absorption measurement. Output files use the required
+`name_N.txt` convention: repeated equipment names such as `Sample`, `Sample1`,
+and `Sample2` become `Sample_1.txt`, `Sample_2.txt`, and `Sample_3.txt`. Names
+that already end with `_N`, such as `Target_20260713_1`, are preserved.
+
+If a future export has a different number of leading transmission columns, pass
+`--skip-columns` with an even number of columns to ignore.
+
 ## Usage
 1. **Compile the Code:**
    ```bash
